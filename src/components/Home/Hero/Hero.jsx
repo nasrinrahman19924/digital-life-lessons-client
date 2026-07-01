@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@heroui/button";
+import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 
 import { Swiper, SwiperSlide } from "swiper/react";
