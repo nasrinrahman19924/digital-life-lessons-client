@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 import {
@@ -25,22 +25,19 @@ import {
 } from "@heroui/dropdown";
 
 import { BookOpenText, Crown } from "lucide-react";
+import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 
 export default function MainNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  /**
-   * Replace with Better Auth later
-   */
-  const user = null;
-  // Example:
-  // const user = {
-  //   name: "Shahin",
-  //   image: "https://i.pravatar.cc/150?img=12",
-  //   isPremium: false,
-  // };
+  // Better Auth Session
+  const { data, isPending } = authClient.useSession();
 
+  const user = data?.user;
   const isLoggedIn = !!user;
 
   const navLinks = [
@@ -63,7 +60,7 @@ export default function MainNavbar() {
       {
         label: "My Lessons",
         href: "/dashboard/my-lessons",
-      }
+      },
     );
 
     if (!user?.isPremium) {
@@ -72,6 +69,22 @@ export default function MainNavbar() {
         href: "/pricing",
       });
     }
+  }
+
+  const handleLogout = async () => {
+    const { error } = await authClient.signOut();
+
+    if (error) {
+      return toast.error(error.message);
+    }
+
+    toast.success("Logout Successfully");
+
+    router.push("/");
+  };
+
+  if (isPending) {
+    return null;
   }
 
   return (
@@ -96,22 +109,15 @@ export default function MainNavbar() {
           </div>
 
           <div>
-            <h2 className="font-bold text-lg">
-              Digital Life Lessons
-            </h2>
+            <h2 className="font-bold text-lg">Digital Life Lessons</h2>
 
-            <p className="text-xs text-default-500">
-              Learn • Reflect • Grow
-            </p>
+            <p className="text-xs text-default-500">Learn • Reflect • Grow</p>
           </div>
         </Link>
       </NavbarBrand>
 
       {/* Desktop Menu */}
-      <NavbarContent
-        justify="center"
-        className="hidden gap-6 lg:flex"
-      >
+      <NavbarContent justify="center" className="hidden lg:flex gap-6">
         {navLinks.map((item) => (
           <NavbarItem key={item.href}>
             <Link
@@ -130,36 +136,26 @@ export default function MainNavbar() {
 
       {/* Right */}
       <NavbarContent justify="end">
-        {!isLoggedIn && (
+        {!isLoggedIn ? (
           <>
             <NavbarItem className="hidden md:flex">
-              <Button
-                as={Link}
-                href="/login"
-                variant="light"
-              >
+              <Button as={Link} href="/login" variant="light">
                 Login
               </Button>
             </NavbarItem>
 
             <NavbarItem>
-              <Button
-                as={Link}
-                href="/register"
-                color="primary"
-              >
+              <Button as={Link} href="/register" color="primary">
                 Sign Up
               </Button>
             </NavbarItem>
           </>
-        )}
-
-        {isLoggedIn && (
+        ) : (
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Avatar
                 isBordered
-                src={user.image}
+                src={user?.image || "/default-user.png"}
                 className="cursor-pointer"
               />
             </DropdownTrigger>
@@ -167,45 +163,38 @@ export default function MainNavbar() {
             <DropdownMenu aria-label="User Menu">
               <DropdownItem
                 key="profile-info"
-                className="h-14 gap-2"
-                textValue="Profile Info"
+                textValue="Profile"
+                className="h-14"
               >
                 <div>
-                  <p className="font-semibold">
-                    {user.name}
-                  </p>
+                  <p className="font-semibold">{user?.name}</p>
 
-                  {user.isPremium ? (
-                    <span className="mt-1 flex items-center gap-1 text-xs text-amber-500">
+                  {user?.isPremium ? (
+                    <span className="flex items-center gap-1 text-xs text-amber-500">
                       <Crown size={13} />
                       Premium
                     </span>
                   ) : (
-                    <span className="text-xs text-default-500">
-                      Free Plan
-                    </span>
+                    <span className="text-xs text-default-500">Free Plan</span>
                   )}
                 </div>
               </DropdownItem>
 
               <DropdownItem
                 key="dashboard"
-                href="/dashboard"
+                onPress={() => router.push("/dashboard")}
               >
                 Dashboard
               </DropdownItem>
 
               <DropdownItem
                 key="profile"
-                href="/dashboard/profile"
+                onPress={() => router.push("/dashboard/profile")}
               >
                 Profile
               </DropdownItem>
 
-              <DropdownItem
-                key="logout"
-                color="danger"
-              >
+              <DropdownItem key="logout" color="danger" onPress={handleLogout}>
                 Logout
               </DropdownItem>
             </DropdownMenu>
@@ -220,9 +209,7 @@ export default function MainNavbar() {
             <Link
               href={item.href}
               className={`block w-full py-2 ${
-                pathname === item.href
-                  ? "text-indigo-600 font-semibold"
-                  : ""
+                pathname === item.href ? "font-semibold text-indigo-600" : ""
               }`}
               onClick={() => setIsMenuOpen(false)}
             >
@@ -234,19 +221,13 @@ export default function MainNavbar() {
         {!isLoggedIn && (
           <>
             <NavbarMenuItem>
-              <Link
-                href="/login"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link href="/login" onClick={() => setIsMenuOpen(false)}>
                 Login
               </Link>
             </NavbarMenuItem>
 
             <NavbarMenuItem>
-              <Link
-                href="/register"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link href="/register" onClick={() => setIsMenuOpen(false)}>
                 Register
               </Link>
             </NavbarMenuItem>
