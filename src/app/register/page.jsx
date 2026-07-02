@@ -43,6 +43,17 @@ export default function RegisterPage() {
       image: photo || "",
       callbackURL: "/",
     });
+    if (!error) {
+      await fetch("http://localhost:5000/api/users/default-role", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
+    };
 
     if (error) {
       return toast.error(error.message);
@@ -144,10 +155,14 @@ export default function RegisterPage() {
               variant="bordered"
               className="w-full"
               onPress={async () => {
-                await authClient.signIn.social({
+                const { error } = await authClient.signIn.social({
                   provider: "google",
-                  callbackURL: "/",
+                  callbackURL: "http://localhost:3000/",
                 });
+
+                if (error) {
+                  toast.error(error.message);
+                }
               }}
             >
               Continue with Google

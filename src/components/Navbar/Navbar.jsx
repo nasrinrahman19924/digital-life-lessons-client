@@ -153,44 +153,33 @@ export default function MainNavbar() {
         ) : (
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
-              <Avatar
-                isBordered
-                src={user?.image || "/default-user.png"}
-                className="cursor-pointer"
-              />
+              <div className="flex items-center gap-3 cursor-pointer">
+                <div className="text-right hidden md:block">
+                  <p className="font-semibold">{user?.name}</p>
+
+                  <p className="text-xs text-gray-500">
+                    {user?.isPremium ? "⭐ Premium" : "Free User"}
+                  </p>
+                </div>
+
+                <Avatar isBordered src={user?.image} className="w-10 h-10" />
+              </div>
             </DropdownTrigger>
 
             <DropdownMenu aria-label="User Menu">
-              <DropdownItem
-                key="profile-info"
-                textValue="Profile"
-                className="h-14"
-              >
+              <DropdownItem key="profile-info">
                 <div>
                   <p className="font-semibold">{user?.name}</p>
 
-                  {user?.isPremium ? (
-                    <span className="flex items-center gap-1 text-xs text-amber-500">
-                      <Crown size={13} />
-                      Premium
-                    </span>
-                  ) : (
-                    <span className="text-xs text-default-500">Free Plan</span>
-                  )}
+                  <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
               </DropdownItem>
 
-              <DropdownItem
-                key="dashboard"
-                onPress={() => router.push("/dashboard")}
-              >
+              <DropdownItem key="dashboard" href="/dashboard">
                 Dashboard
               </DropdownItem>
 
-              <DropdownItem
-                key="profile"
-                onPress={() => router.push("/dashboard/profile")}
-              >
+              <DropdownItem key="profile" href="/dashboard/profile">
                 Profile
               </DropdownItem>
 

@@ -114,13 +114,18 @@ export default function LoginPage() {
             </Button>
 
             <Button
+              type="button"
               variant="bordered"
               className="w-full"
               onPress={async () => {
-                await authClient.signIn.social({
+                const { error } = await authClient.signIn.social({
                   provider: "google",
-                  callbackURL: "/",
+                  callbackURL: "http://localhost:3000/",
                 });
+
+                if (error) {
+                  toast.error(error.message);
+                }
               }}
             >
               Continue with Google
