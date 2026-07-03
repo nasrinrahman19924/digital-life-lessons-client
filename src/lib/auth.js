@@ -17,7 +17,7 @@ export const auth = betterAuth({
 
   baseURL: process.env.BETTER_AUTH_URL,
 
-  trustedOrigins: [process.env.CLIENT_URL],
+  trustedOrigins: [process.env.CLIENT_URL, "http://localhost:3000"],
 
   emailAndPassword: {
     enabled: true,
@@ -27,6 +27,16 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+  user: {
+    additionalFields: {
+      role: {
+        default: "user",
+      },
+      isPremium: {
+        default: false,
+      },
     },
   },
 });
