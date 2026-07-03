@@ -16,7 +16,7 @@ export default function MyFavoritesPage() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5000/api/lessons/favorites/${user.email}`)
+    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/favorites/${user.email}`)
       .then((res) => res.json())
       .then((data) => setFavorites(data));
   }, [user]);
@@ -31,7 +31,7 @@ export default function MyFavoritesPage() {
     if (!confirm.isConfirmed) return;
 
     const res = await fetch(
-      `http://localhost:5000/api/lessons/favorite/${id}`,
+      `https://digital-life-lessons-server-blush.vercel.app/api/lessons/favorite/${id}`,
       {
         method: "DELETE",
       },

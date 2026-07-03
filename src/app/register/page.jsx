@@ -44,7 +44,7 @@ export default function RegisterPage() {
       callbackURL: "/",
     });
     if (!error) {
-      await fetch("http://localhost:5000/api/users/default-role", {
+      await fetch("https://digital-life-lessons-server-blush.vercel.app/api/users/default-role", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -63,6 +63,7 @@ export default function RegisterPage() {
 
     router.push("/");
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-violet-100 flex items-center justify-center p-6">
@@ -157,7 +158,7 @@ export default function RegisterPage() {
               onPress={async () => {
                 const { error } = await authClient.signIn.social({
                   provider: "google",
-                  callbackURL: "http://localhost:3000/",
+                  callbackURL: "https://digital-life-lessons-client-b987.vercel.app",
                 });
 
                 if (error) {

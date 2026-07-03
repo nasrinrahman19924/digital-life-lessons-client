@@ -17,7 +17,7 @@ export default function MyLessonsPage() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5000/api/lessons/${user.email}`)
+    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/${user.email}`)
       .then((res) => res.json())
       .then((data) => {
         setLessons(data);
@@ -38,7 +38,7 @@ export default function MyLessonsPage() {
 
     if (!result.isConfirmed) return;
 
-    const res = await fetch(`http://localhost:5000/api/lessons/${id}`, {
+    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/${id}`, {
       method: "DELETE",
     });
 

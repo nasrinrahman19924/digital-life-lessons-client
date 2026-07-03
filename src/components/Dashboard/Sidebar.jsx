@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -21,8 +22,18 @@ export default function Sidebar() {
   const { data } = authClient.useSession();
 
   const user = data?.user;
+  const email = data?.user?.email;
+  const [dbUser, setDbUser] = useState(null);
 
-  // পরে Database থেকে role আনবে
+  useEffect(() => {
+    if (email) {
+      fetch(`https://digital-life-lessons-server-blush.vercel.app/api/users/${email}`)
+        .then((res) => res.json())
+        .then((data) => setDbUser(data));
+    }
+  }, [email]);
+
+  
   const isAdmin = user?.role === "admin";
 
   const userMenus = [

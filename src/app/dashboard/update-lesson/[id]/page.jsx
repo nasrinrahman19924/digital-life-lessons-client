@@ -19,7 +19,7 @@ export default function UpdateLessonPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/lessons/single/${id}`)
+    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/single/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setLesson(data);
@@ -45,7 +45,7 @@ export default function UpdateLessonPage() {
           : "Free",
     };
 
-    const res = await fetch(`http://localhost:5000/api/lessons/${id}`, {
+    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

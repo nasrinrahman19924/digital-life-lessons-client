@@ -9,7 +9,7 @@ export default function PricingPage() {
   const user = data?.user;
   const handleCheckout = async () => {
     const res = await fetch(
-      "http://localhost:5000/api/payment/create-checkout-session",
+      "https://digital-life-lessons-server-blush.vercel.app/api/payment/create-checkout-session",
       {
         method: "POST",
         headers: {

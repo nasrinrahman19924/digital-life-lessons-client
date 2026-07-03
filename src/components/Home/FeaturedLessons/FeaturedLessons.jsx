@@ -6,7 +6,7 @@ export default function FeaturedLessons() {
   const [lessons, setLessons] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/lessons/featured/all")
+    fetch("https://digital-life-lessons-server-blush.vercel.app/api/lessons/featured/all")
       .then((res) => res.json())
       .then((data) => setLessons(data));
   }, []);

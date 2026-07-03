@@ -16,7 +16,7 @@ export default function AdminProfilePage() {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:5000/api/admin/profile", {
+    const res = await fetch("https://digital-life-lessons-server-blush.vercel.app/api/admin/profile", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

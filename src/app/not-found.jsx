@@ -41,7 +41,7 @@ export default function AddLessonPage() {
       isFeatured: false,
     };
 
-    const res = await fetch("http://localhost:5000/api/lessons", {
+    const res = await fetch("https://digital-life-lessons-server-blush.vercel.app/api/lessons", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

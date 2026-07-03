@@ -9,7 +9,7 @@ export default function ManageLessonsPage() {
   const [filter, setFilter] = useState("All");
 
   const loadLessons = () => {
-    fetch("http://localhost:5000/api/admin/lessons")
+    fetch("https://digital-life-lessons-server-blush.vercel.app/api/admin/lessons")
       .then((res) => res.json())
       .then((data) => setLessons(data));
   };
@@ -27,7 +27,7 @@ export default function ManageLessonsPage() {
 
     if (!result.isConfirmed) return;
 
-    const res = await fetch(`http://localhost:5000/api/admin/lessons/${id}`, {
+    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/admin/lessons/${id}`, {
       method: "DELETE",
     });
 
@@ -40,7 +40,7 @@ export default function ManageLessonsPage() {
   };
 
   const handleFeatured = async (id) => {
-    const res = await fetch(`http://localhost:5000/api/admin/featured/${id}`, {
+    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/admin/featured/${id}`, {
       method: "PATCH",
     });
 
@@ -53,7 +53,7 @@ export default function ManageLessonsPage() {
   };
 
   const handleReviewed = async (id) => {
-    const res = await fetch(`http://localhost:5000/api/admin/review/${id}`, {
+    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/admin/review/${id}`, {
       method: "PATCH",
     });
 

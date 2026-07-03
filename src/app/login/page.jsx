@@ -120,7 +120,7 @@ export default function LoginPage() {
               onPress={async () => {
                 const { error } = await authClient.signIn.social({
                   provider: "google",
-                  callbackURL: "http://localhost:3000/",
+                  callbackURL: "https://digital-life-lessons-client-b987.vercel.app",
                 });
 
                 if (error) {

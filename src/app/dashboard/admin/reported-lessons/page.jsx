@@ -8,7 +8,7 @@ export default function ReportedLessonsPage() {
   const [reports, setReports] = useState([]);
 
   const loadReports = () => {
-    fetch("http://localhost:5000/api/admin/reports")
+    fetch("https://digital-life-lessons-server-blush.vercel.app/api/admin/reports")
       .then((res) => res.json())
       .then((data) => setReports(data));
   };
@@ -27,7 +27,7 @@ export default function ReportedLessonsPage() {
     if (!confirm.isConfirmed) return;
 
     const res = await fetch(
-      `http://localhost:5000/api/admin/report/delete/${lessonId}`,
+      `https://digital-life-lessons-server-blush.vercel.app/api/admin/report/delete/${lessonId}`,
       {
         method: "DELETE",
       },
@@ -43,7 +43,7 @@ export default function ReportedLessonsPage() {
 
   const handleIgnore = async (id) => {
     const res = await fetch(
-      `http://localhost:5000/api/admin/report/ignore/${id}`,
+      `https://digital-life-lessons-server-blush.vercel.app/api/admin/report/ignore/${id}`,
       {
         method: "DELETE",
       },

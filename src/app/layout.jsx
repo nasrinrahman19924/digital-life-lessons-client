@@ -1,12 +1,12 @@
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import Providers from "@/providers/Providers";
+import UserProviders from "@/providers/UserProvider";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <UserProviders>{children}</UserProviders>
          <Toaster position="top-center" />
       </body>
     </html>

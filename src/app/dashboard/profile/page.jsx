@@ -23,11 +23,11 @@ export default function ProfilePage() {
     setName(user.name || "");
     setPhoto(user.image || "");
 
-    fetch(`http://localhost:5000/api/lessons/${user.email}`)
+    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/${user.email}`)
       .then((res) => res.json())
       .then((data) => setLessons(data));
 
-    fetch(`http://localhost:5000/api/lessons/favorites/${user.email}`)
+    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/favorites/${user.email}`)
       .then((res) => res.json())
       .then((data) => setFavorites(data));
   }, [user]);

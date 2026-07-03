@@ -8,7 +8,7 @@ export default function ManageUsersPage() {
   const [users, setUsers] = useState([]);
 
   const loadUsers = () => {
-    fetch("http://localhost:5000/api/admin/users")
+    fetch("https://digital-life-lessons-server-blush.vercel.app/api/admin/users")
       .then((res) => res.json())
       .then((data) => setUsers(data));
   };
@@ -18,7 +18,7 @@ export default function ManageUsersPage() {
   }, []);
 
   const handleRole = async (id) => {
-    const res = await fetch(`http://localhost:5000/api/admin/users/${id}`, {
+    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/admin/users/${id}`, {
       method: "PATCH",
     });
 
@@ -39,7 +39,7 @@ export default function ManageUsersPage() {
 
     if (!result.isConfirmed) return;
 
-    const res = await fetch(`http://localhost:5000/api/admin/users/${id}`, {
+    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/admin/users/${id}`, {
       method: "DELETE",
     });
 

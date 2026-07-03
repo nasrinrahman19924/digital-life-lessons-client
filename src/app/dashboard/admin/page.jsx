@@ -12,7 +12,7 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/stats")
+    fetch("https://digital-life-lessons-server-blush.vercel.app/api/admin/stats")
       .then((res) => res.json())
       .then((data) => setStats(data));
   }, []);
