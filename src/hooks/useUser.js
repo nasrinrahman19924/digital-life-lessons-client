@@ -10,7 +10,7 @@ const useUser = () => {
 
   useEffect(() => {
     if (data?.user?.email) {
-      fetch(`http://localhost:5000/api/users/${data.user.email}`)
+      fetch(`https://digital-life-lessons-server-blush.vercel.app/api/users/${data.user.email}`)
         .then((res) => res.json())
         .then(setDbUser);
     }

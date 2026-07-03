@@ -15,7 +15,7 @@ export default function UserProvider({ children }) {
     if (session?.user?.email) {
       axios
         .get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/users/${session.user.email}`,
+          `${process.env.BETTER_AUTH_URL}/api/users/${session.user.email}`,
         )
 
         .then((res) => {
