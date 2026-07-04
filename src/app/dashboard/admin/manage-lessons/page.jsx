@@ -9,7 +9,7 @@ export default function ManageLessonsPage() {
   const [filter, setFilter] = useState("All");
 
   const loadLessons = () => {
-    fetch("https://digital-life-lessons-server-blush.vercel.app/api/admin/lessons")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/lessons`)
       .then((res) => res.json())
       .then((data) => setLessons(data));
   };
@@ -27,9 +27,12 @@ export default function ManageLessonsPage() {
 
     if (!result.isConfirmed) return;
 
-    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/admin/lessons/${id}`, {
-      method: "DELETE",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/lessons/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
 
     const data = await res.json();
 
@@ -39,23 +42,36 @@ export default function ManageLessonsPage() {
     }
   };
 
-  const handleFeatured = async (id) => {
-    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/admin/featured/${id}`, {
-      method: "PATCH",
-    });
+  const handleFeatured = async (id, status) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/featured/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isFeatured: status,
+        }),
+      },
+    );
 
     const data = await res.json();
 
     if (data.modifiedCount) {
-      toast.success("Lesson Featured");
+      toast.success(status ? "Lesson Featured" : "Lesson Unfeatured");
+
       loadLessons();
     }
   };
 
   const handleReviewed = async (id) => {
-    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/admin/review/${id}`, {
-      method: "PATCH",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/review/${id}`,
+      {
+        method: "PATCH",
+      },
+    );
 
     const data = await res.json();
 
@@ -147,14 +163,16 @@ export default function ManageLessonsPage() {
 
                 <td>
                   <div className="flex gap-2">
-                    {!lesson.isFeatured && (
-                      <button
-                        onClick={() => handleFeatured(lesson._id)}
-                        className="btn btn-success btn-sm"
-                      >
-                        Feature
-                      </button>
-                    )}
+                    <button
+                      onClick={() =>
+                        handleFeatured(lesson._id, !lesson.isFeatured)
+                      }
+                      className={`btn btn-sm ${
+                        lesson.isFeatured ? "btn-warning" : "btn-success"
+                      }`}
+                    >
+                      {lesson.isFeatured ? "Unfeature" : "Feature"}
+                    </button>
 
                     {!lesson.reviewed && (
                       <button

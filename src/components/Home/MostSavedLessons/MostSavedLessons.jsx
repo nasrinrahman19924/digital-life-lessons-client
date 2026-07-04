@@ -14,7 +14,7 @@ const lessons = [
 
     category: "Mindset",
 
-    accessLevel: "Free",
+    isPremium: "Free",
 
     likes: 1340,
 
@@ -41,7 +41,7 @@ const lessons = [
 
     category: "Personal Growth",
 
-    accessLevel: "Premium",
+    isPremium: "Premium",
 
     likes: 950,
 
@@ -68,7 +68,7 @@ const lessons = [
 
     category: "Relationships",
 
-    accessLevel: "Free",
+    isPremium: "Free",
 
     likes: 1180,
 

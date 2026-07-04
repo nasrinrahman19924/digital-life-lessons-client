@@ -15,20 +15,34 @@ export default function AddLessonPage() {
       title: form.get("title"),
       category: form.get("category"),
       description: form.get("description"),
+
       authorName: data.user.name,
       authorEmail: data.user.email,
       authorImage: data.user.image,
+
+      visibility: "Public",
+
       isFeatured: false,
       isPremium: false,
+
+      likes: 0,
+      saved: 0,
+      reportCount: 0,
+      reviewed: false,
+
+      createdAt: new Date(),
     };
 
-    const res = await fetch("https://digital-life-lessons-server-blush.vercel.app/api/lessons", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetch(
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons`),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(lesson),
       },
-      body: JSON.stringify(lesson),
-    });
+    );
 
     if (res.ok) {
       toast.success("Lesson Added");
@@ -52,6 +66,22 @@ export default function AddLessonPage() {
         placeholder="Category"
         className="border p-3 rounded-lg w-full"
       />
+      <input
+        name="image"
+        type="text"
+        placeholder="Lesson Image URL"
+        className="border p-3 rounded-lg w-full"
+      />
+      <select name="visibility" className="border p-3 rounded-lg w-full">
+        <option value="Public">Public</option>
+
+        <option value="Private">Private</option>
+      </select>
+      <select name="premium" className="border p-3 rounded-lg w-full">
+        <option value="no">Free Lesson</option>
+
+        <option value="yes">Premium Lesson</option>
+      </select>
 
       <textarea
         name="description"

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner";
 
 export default function AdminProfilePage() {
   const { data } = authClient.useSession();
@@ -16,17 +17,20 @@ export default function AdminProfilePage() {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("https://digital-life-lessons-server-blush.vercel.app/api/admin/profile", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetch(
+      "https://digital-life-lessons-server-blush.vercel.app/api/admin/profile",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email,
+          name,
+          image: photo,
+        }),
       },
-      body: JSON.stringify({
-        email: user.email,
-        name,
-        image: photo,
-      }),
-    });
+    );
 
     const data = await res.json();
 
@@ -34,6 +38,9 @@ export default function AdminProfilePage() {
       toast.success("Profile Updated");
     }
   };
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="max-w-4xl mx-auto">

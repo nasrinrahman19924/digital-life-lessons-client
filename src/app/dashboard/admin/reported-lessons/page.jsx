@@ -1,116 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-export default function ReportedLessonsPage() {
-  const [reports, setReports] = useState([]);
-
-  const loadReports = () => {
-    fetch("https://digital-life-lessons-server-blush.vercel.app/api/admin/reports")
-      .then((res) => res.json())
-      .then((data) => setReports(data));
-  };
-
-  useEffect(() => {
-    loadReports();
-  }, []);
-
-  const handleDelete = async (lessonId) => {
-    const confirm = await Swal.fire({
-      title: "Delete Lesson?",
-      icon: "warning",
-      showCancelButton: true,
-    });
-
-    if (!confirm.isConfirmed) return;
-
-    const res = await fetch(
-      `https://digital-life-lessons-server-blush.vercel.app/api/admin/report/delete/${lessonId}`,
-      {
-        method: "DELETE",
-      },
-    );
-
-    const data = await res.json();
-
-    if (data.deletedCount) {
-      toast.success("Lesson Deleted");
-      loadReports();
-    }
-  };
-
-  const handleIgnore = async (id) => {
-    const res = await fetch(
-      `https://digital-life-lessons-server-blush.vercel.app/api/admin/report/ignore/${id}`,
-      {
-        method: "DELETE",
-      },
-    );
-
-    const data = await res.json();
-
-    if (data.deletedCount) {
-      toast.success("Reports Cleared");
-      loadReports();
-    }
-  };
+export default function ReportsPage() {
+  const { data = [] } = useQuery({
+    queryKey: ["reports"],
+    queryFn: async () => {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/reports`,
+      );
+      return res.data;
+    },
+  });
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">Reported Lessons</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Reported Lessons</h1>
 
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Lesson</th>
-
-              <th>Reported By</th>
-
-              <th>Reason</th>
-
-              <th>Count</th>
-
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {reports.map((report) => (
-              <tr key={report._id}>
-                <td>{report.lessonTitle}</td>
-
-                <td>{report.reporterEmail}</td>
-
-                <td>{report.reason}</td>
-
-                <td>
-                  <span className="badge badge-error">{report.count || 1}</span>
-                </td>
-
-                <td>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleDelete(report.lessonId)}
-                      className="btn btn-error btn-sm"
-                    >
-                      Delete Lesson
-                    </button>
-
-                    <button
-                      onClick={() => handleIgnore(report._id)}
-                      className="btn btn-success btn-sm"
-                    >
-                      Ignore
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="space-y-4">
+        {data.map((r) => (
+          <div key={r._id} className="p-4 bg-white shadow rounded">
+            <h2 className="font-bold">{r.lesson?.title}</h2>
+            <p className="text-sm">Reason: {r.reason}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

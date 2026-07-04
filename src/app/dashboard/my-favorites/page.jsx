@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
-import Swal from "sweetalert2";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function MyFavoritesPage() {
   const { data } = authClient.useSession();
@@ -12,89 +12,109 @@ export default function MyFavoritesPage() {
   const user = data?.user;
 
   const [favorites, setFavorites] = useState([]);
+  const [filter, setFilter] = useState("All");
 
-  useEffect(() => {
+  const loadFavorites = async () => {
     if (!user?.email) return;
 
-    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/favorites/${user.email}`)
-      .then((res) => res.json())
-      .then((data) => setFavorites(data));
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/lessons/favorites/${user.email}`,
+    );
+
+    const result = await res.json();
+
+    setFavorites(result);
+  };
+
+  useEffect(() => {
+    loadFavorites();
   }, [user]);
 
-  const handleDelete = async (id) => {
-    const confirm = await Swal.fire({
-      title: "Remove Favorite?",
-      icon: "warning",
-      showCancelButton: true,
-    });
+  const filteredFavorites = useMemo(() => {
+    if (filter === "All") return favorites;
 
-    if (!confirm.isConfirmed) return;
+    return favorites.filter((item) => item.category === filter);
+  }, [favorites, filter]);
 
+  const categories = [
+    "All",
+    ...new Set(favorites.map((item) => item.category)),
+  ];
+
+  const handleRemove = async (id) => {
     const res = await fetch(
-      `https://digital-life-lessons-server-blush.vercel.app/api/lessons/favorite/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/lessons/favorite/${id}`,
       {
         method: "DELETE",
       },
     );
 
-    const data = await res.json();
+    const result = await res.json();
 
-    if (data.deletedCount) {
-      toast.success("Removed");
-
-      setFavorites(favorites.filter((item) => item._id !== id));
+    if (result.deletedCount) {
+      toast.success("Removed Successfully");
+      loadFavorites();
     }
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8">My Favorites</h1>
+    <div className="max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">My Favorites</h1>
 
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Title</th>
-
-              <th>Category</th>
-
-              <th>Access</th>
-
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {favorites.map((item) => (
-              <tr key={item._id}>
-                <td>{item.title}</td>
-
-                <td>{item.category}</td>
-
-                <td>{item.access}</td>
-
-                <td>
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/lesson/${item.lessonId}`}
-                      className="btn btn-sm"
-                    >
-                      Details
-                    </Link>
-
-                    <button
-                      onClick={() => handleDelete(item._id)}
-                      className="btn btn-sm btn-error"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <select
+          className="select select-bordered"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          {categories.map((cat) => (
+            <option key={cat}>{cat}</option>
+          ))}
+        </select>
       </div>
+
+      {filteredFavorites.length === 0 ? (
+        <div className="text-center py-20 text-gray-500">
+          No Favorite Lessons Found
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredFavorites.map((lesson) => (
+            <div
+              key={lesson._id}
+              className="border rounded-xl p-5 shadow bg-white"
+            >
+              <Image
+                src={lesson.image || "/lesson-placeholder.jpg"}
+                alt={lesson.title}
+                width={400}
+                height={250}
+                className="rounded-lg h-52 object-cover w-full"
+              />
+
+              <h2 className="text-xl font-bold mt-4">{lesson.title}</h2>
+
+              <p className="text-sm text-gray-500">{lesson.category}</p>
+
+              <div className="flex justify-between mt-5">
+                <Link
+                  href={`/lessons/${lesson.lessonId}`}
+                  className="btn btn-primary btn-sm"
+                >
+                  Details
+                </Link>
+
+                <button
+                  onClick={() => handleRemove(lesson._id)}
+                  className="btn btn-error btn-sm"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

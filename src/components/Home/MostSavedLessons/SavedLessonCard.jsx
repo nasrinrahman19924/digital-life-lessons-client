@@ -27,10 +27,8 @@ export default function SavedLessonCard({ lesson }) {
             {lesson.category}
           </Chip>
 
-          <Chip
-            color={lesson.accessLevel === "Premium" ? "warning" : "success"}
-          >
-            {lesson.accessLevel}
+          <Chip color={lesson.isPremium ? "warning" : "success"}>
+            {lesson.isPremium ? "Premium" : "Free"}
           </Chip>
         </div>
 
