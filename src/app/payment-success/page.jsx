@@ -1,69 +1,86 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import axios from "axios";
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { UserContext } from "@/providers/UserProvider";
 
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
 
-  const sessionId = searchParams.get("session_id");
+  const session_id = searchParams.get("session_id");
+
+  const { refreshUser } = useContext(UserContext);
 
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("Verifying your payment...");
+
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const verifyPayment = async () => {
-      if (!sessionId) {
-        setMessage("Invalid payment session.");
-        setLoading(false);
-        return;
-      }
-
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/payment/verify?session_id=${sessionId}`,
+        if (!session_id) return;
+
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/payment/verify`,
+          {
+            params: {
+              session_id,
+            },
+          },
         );
 
-        const data = await res.json();
+        if (res.data.success) {
+          await refreshUser();
 
-        if (data.success) {
-          setMessage("🎉 Premium Activated Successfully!");
-
-          // Refresh Better Auth session
-          if (authClient.getSession) {
-            await authClient.getSession();
-          }
-        } else {
-          setMessage(data.message || "Payment verification failed.");
+          setSuccess(true);
         }
       } catch (err) {
         console.error(err);
-        setMessage("Something went wrong.");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     verifyPayment();
-  }, [sessionId]);
+  }, [session_id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <h2 className="text-2xl font-bold">Verifying Payment...</h2>
+      </div>
+    );
+  }
+
+  if (!success) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <h2 className="text-red-600 text-2xl font-bold">
+          Payment Verification Failed
+        </h2>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-5">
-      <div className="max-w-lg w-full bg-white shadow-xl rounded-2xl p-10 text-center">
-        <CheckCircle size={80} className="mx-auto text-green-500 mb-5" />
+    <div className="min-h-screen flex justify-center items-center px-5">
+      <div className="bg-white shadow-xl rounded-2xl p-10 text-center max-w-lg">
+        <CheckCircle className="mx-auto text-green-600" size={80} />
 
-        <h1 className="text-4xl font-bold mb-4">Payment Successful 🎉</h1>
+        <h1 className="text-4xl font-bold mt-6">Payment Successful 🎉</h1>
 
-        <p className="text-gray-600 mb-8">
-          {loading ? "Verifying payment..." : message}
+        <p className="mt-4 text-gray-600">
+          Congratulations!
+          <br />
+          Your account is now Premium.
         </p>
 
-        <div className="flex justify-center gap-4">
+        <div className="mt-8 flex justify-center gap-4">
           <Link href="/">
-            <button className="btn btn-outline">Go Home</button>
+            <button className="btn btn-outline">Home</button>
           </Link>
 
           <Link href="/dashboard/profile">
