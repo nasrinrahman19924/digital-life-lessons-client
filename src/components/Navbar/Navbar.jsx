@@ -70,7 +70,7 @@ export default function MainNavbar() {
       });
     }
   }
-console.log(user)
+
   const handleLogout = async () => {
     const { error } = await authClient.signOut();
 
