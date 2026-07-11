@@ -19,7 +19,9 @@ export default function UpdateLessonPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/single/${id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons/single/${id}`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
         setLesson(data);
@@ -39,19 +41,20 @@ export default function UpdateLessonPage() {
       emotion: form.get("emotion"),
       image: form.get("image"),
       visibility: form.get("visibility"),
-      access:
-        user?.isPremium && form.get("access") === "Premium"
-          ? "Premium"
-          : "Free",
+      isPremium: user?.role === "premium" && form.get("access") === "Premium",
     };
 
-    const res = await fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/lessons/${id}`,
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedLesson),
       },
-      body: JSON.stringify(updatedLesson),
-    });
+    );
 
     const data = await res.json();
 
@@ -70,32 +73,28 @@ export default function UpdateLessonPage() {
 
       <form onSubmit={handleUpdate} className="space-y-5">
         <input
-          defaultValue={lesson.title}
+          defaultValue={lesson?.title}
           name="title"
           className="input input-bordered w-full"
         />
 
         <textarea
-          defaultValue={lesson.description}
+          defaultValue={lesson?.description}
           rows="6"
           name="description"
           className="textarea textarea-bordered w-full"
         />
 
-        <select
-          defaultValue={lesson.category}
+        <input
+          type="text"
           name="category"
-          className="select select-bordered w-full"
-        >
-          <option>Personal Growth</option>
-          <option>Career</option>
-          <option>Relationships</option>
-          <option>Mindset</option>
-          <option>Mistakes Learned</option>
-        </select>
+          defaultValue={lesson?.category}
+          placeholder="Enter Category"
+          className="input input-bordered w-full"
+        />
 
         <select
-          defaultValue={lesson.emotion}
+          defaultValue={lesson?.emotion}
           name="emotion"
           className="select select-bordered w-full"
         >
@@ -106,13 +105,13 @@ export default function UpdateLessonPage() {
         </select>
 
         <input
-          defaultValue={lesson.image}
+          defaultValue={lesson?.image}
           name="image"
           className="input input-bordered w-full"
         />
 
         <select
-          defaultValue={lesson.visibility}
+          defaultValue={lesson?.visibility}
           name="visibility"
           className="select select-bordered w-full"
         >
@@ -121,16 +120,15 @@ export default function UpdateLessonPage() {
         </select>
 
         <select
-          defaultValue={lesson.access}
+          defaultValue={lesson?.isPremium ? "Premium" : "Free"}
           name="access"
-          disabled={!user?.isPremium}
+          disabled={user?.role !== "premium"}
           className="select select-bordered w-full"
         >
           <option>Free</option>
           <option>Premium</option>
         </select>
-
-        {!user?.isPremium && (
+        {user?.role !== "premium" && (
           <p className="text-red-500 text-sm">
             Upgrade to Premium to use Premium Access.
           </p>

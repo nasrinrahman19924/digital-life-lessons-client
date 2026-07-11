@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import Hero from "@/components/Home/Hero/Hero";
 import FeaturedLessons from "@/components/Home/FeaturedLessons/FeaturedLessons";
@@ -7,11 +6,12 @@ import TopContributors from "@/components/Home/TopContributors/TopContributors";
 import MostSavedLessons from "@/components/Home/MostSavedLessons/MostSavedLessons";
 import PremiumCTA from "@/components/Home/CTA/PremiumCTA";
 import Newsletter from "@/components/Home/Newsletter/Newsletter";
+import MainNavbar from "@/components/Navbar/Navbar";
 
 export default function Home() {
   return (
     <>
-      <Navbar />
+      <MainNavbar/>
 
       <main className="min-h-screen">
         <Hero />

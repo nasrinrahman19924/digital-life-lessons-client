@@ -9,7 +9,9 @@ export default function ManageLessonsPage() {
   const [filter, setFilter] = useState("All");
 
   const loadLessons = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/lessons`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/lessons`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => setLessons(data));
   };
@@ -28,9 +30,10 @@ export default function ManageLessonsPage() {
     if (!result.isConfirmed) return;
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/lessons/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/lessons/${id}`,
       {
         method: "DELETE",
+        credentials: "include",
       },
     );
 
@@ -47,6 +50,7 @@ export default function ManageLessonsPage() {
       `${process.env.NEXT_PUBLIC_API_URL}/admin/featured/${id}`,
       {
         method: "PATCH",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -67,9 +71,10 @@ export default function ManageLessonsPage() {
 
   const handleReviewed = async (id) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/review/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/review/${id}`,
       {
         method: "PATCH",
+        credentials: "include",
       },
     );
 
@@ -143,6 +148,12 @@ export default function ManageLessonsPage() {
               <th>Reviewed</th>
 
               <th>Actions</th>
+
+              <th>Premium</th>
+
+              <th>Reports</th>
+
+              <th>Created</th>
             </tr>
           </thead>
 
@@ -151,7 +162,7 @@ export default function ManageLessonsPage() {
               <tr key={lesson._id}>
                 <td>{lesson.title}</td>
 
-                <td>{lesson.name}</td>
+                <td>{lesson.authorName}</td>
 
                 <td>{lesson.category}</td>
 
@@ -160,6 +171,12 @@ export default function ManageLessonsPage() {
                 <td>{lesson.isFeatured ? "✅" : "❌"}</td>
 
                 <td>{lesson.reviewed ? "✅" : "❌"}</td>
+
+                <td>{lesson.isPremium ? "Yes" : "No"}</td>
+
+                <td>{lesson.reportCount}</td>
+
+                <td>{new Date(lesson.createdAt).toLocaleDateString()}</td>
 
                 <td>
                   <div className="flex gap-2">
@@ -174,7 +191,11 @@ export default function ManageLessonsPage() {
                       {lesson.isFeatured ? "Unfeature" : "Feature"}
                     </button>
 
-                    {!lesson.reviewed && (
+                    {lesson.reviewed ? (
+                      <span className="text-green-600 font-semibold">
+                        Reviewed
+                      </span>
+                    ) : (
                       <button
                         onClick={() => handleReviewed(lesson._id)}
                         className="btn btn-info btn-sm"
@@ -182,7 +203,6 @@ export default function ManageLessonsPage() {
                         Review
                       </button>
                     )}
-
                     <button
                       onClick={() => handleDelete(lesson._id)}
                       className="btn btn-error btn-sm"

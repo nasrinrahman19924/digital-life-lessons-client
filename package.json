@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.6.23",
-    "@heroui/react": "^2.8.5",
+    "@heroui/react": "^3.2.1",
+    "@heroui/styles": "^3.2.1",
     "@heroui/theme": "^2.4.26",
     "@hookform/resolvers": "^5.4.0",
     "@stripe/react-stripe-js": "^6.7.0",
@@ -37,6 +38,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@gravity-ui/icons": "^2.20.0",
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",

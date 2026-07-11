@@ -12,14 +12,20 @@ export default function LikeButton({ lesson }) {
       `${process.env.NEXT_PUBLIC_API_URL}/lessons/like/${lesson._id}`,
       {
         method: "PATCH",
+        credentials: "include",
       },
     );
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      return toast.error(result.message || "Please login first");
+    }
 
     setLiked(!liked);
 
     toast.success(liked ? "Like Removed" : "Lesson Liked");
   };
-
   return (
     <Button color={liked ? "danger" : "primary"} onClick={handleLike}>
       {liked ? "Unlike" : "Like"}

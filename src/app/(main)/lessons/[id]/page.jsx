@@ -12,10 +12,6 @@ import CommentSection from "@/components/Lessons/CommentSection";
 import { authClient } from "@/lib/auth-client";
 import LoadingSpinner from "@/components/Shared/LoadingSpinner";
 import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   Button,
 } from "@heroui/react";
 
@@ -39,32 +35,26 @@ export default function LessonDetailsPage({ params }) {
     },
   });
 
- if (isLoading) {
-  return <LoadingSpinner />;
-}
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (!lesson) {
     return <div className="py-40 text-center">Lesson Not Found</div>;
   }
   if (lesson.isPremium && !user?.isPremium) {
-  return (
-    <div className="max-w-3xl mx-auto py-32 text-center">
-      <h1 className="text-4xl font-bold mb-5">
-        Premium Lesson
-      </h1>
+    return (
+      <div className="max-w-3xl mx-auto py-32 text-center">
+        <h1 className="text-4xl font-bold mb-5">Premium Lesson</h1>
 
-      <p className="mb-8">
-        Upgrade your account to access this lesson.
-      </p>
+        <p className="mb-8">Upgrade your account to access this lesson.</p>
 
-      <Link href="/pricing">
-        <Button color="warning">
-          Upgrade Now
-        </Button>
-      </Link>
-    </div>
-  );
-}
+        <Link href="/pricing">
+          <Button color="warning">Upgrade Now</Button>
+        </Link>
+      </div>
+    );
+  }
   const handleReport = async (reason) => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/lessons/report`,
@@ -188,24 +178,6 @@ export default function LessonDetailsPage({ params }) {
         <FavoriteButton lesson={lesson} />
 
         <LikeButton lesson={lesson} />
-        <Dropdown>
-          <DropdownTrigger>
-            <Button color="danger">Report Lesson</Button>
-          </DropdownTrigger>
-
-          <DropdownMenu
-            aria-label="Report Lesson"
-            onAction={(key) => handleReport(key)}
-          >
-            <DropdownItem key="Spam">Spam</DropdownItem>
-
-            <DropdownItem key="Abusive">Abusive</DropdownItem>
-
-            <DropdownItem key="Misleading">Misleading</DropdownItem>
-
-            <DropdownItem key="Other">Other</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
 
         <ReportButton lesson={lesson} />
       </div>

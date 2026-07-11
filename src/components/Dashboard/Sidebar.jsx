@@ -27,14 +27,13 @@ export default function Sidebar() {
 
   useEffect(() => {
     if (email) {
-      fetch(`https://digital-life-lessons-server-blush.vercel.app/api/users/${email}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${email}`)
         .then((res) => res.json())
         .then((data) => setDbUser(data));
     }
   }, [email]);
 
-  
-  const isAdmin = user?.role === "admin";
+  const isAdmin = dbUser?.role === "admin";
 
   const userMenus = [
     {

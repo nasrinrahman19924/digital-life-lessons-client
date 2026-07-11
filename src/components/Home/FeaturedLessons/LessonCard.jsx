@@ -7,16 +7,16 @@ import { Heart, Bookmark } from "lucide-react";
 
 export default function LessonCard({ lesson }) {
   const isPremium = lesson?.isPremium;
+  const imageSrc = lesson?.image?.startsWith("http")
+    ? lesson.image
+    : "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800";
 
   return (
     <div className="group overflow-hidden rounded-2xl border bg-white shadow hover:shadow-xl transition duration-300">
       {/* Image */}
       <div className="relative h-56 overflow-hidden">
         <Image
-          src={
-            lesson?.image ||
-            "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800"
-          }
+          src={imageSrc}
           alt={lesson?.title}
           fill
           className={`object-cover transition duration-500 group-hover:scale-110 ${
@@ -98,14 +98,11 @@ export default function LessonCard({ lesson }) {
             </span>
           </div>
 
-          <Button
-            as={Link}
-            href={`/lessons/${lesson._id}`}
-            color="primary"
-            radius="full"
-          >
-            Details
-          </Button>
+          <Link href={`/lessons/${lesson._id}`}>
+            <Button color="primary" radius="full">
+              Details
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

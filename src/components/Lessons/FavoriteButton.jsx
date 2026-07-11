@@ -28,13 +28,13 @@ export default function FavoriteButton({ lesson }) {
       `${process.env.NEXT_PUBLIC_API_URL}/lessons/favorite`,
       {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(favorite),
       },
     );
-
     const result = await res.json();
 
     if (result.insertedId) {

@@ -35,6 +35,7 @@ export default function PaymentSuccessPage() {
         if (res.data.success) {
           await refreshUser();
 
+          window.location.href = "/dashboard/profile";
           setSuccess(true);
         }
       } catch (err) {

@@ -1,41 +1,69 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { UserContext } from "@/providers/UserProvider";
+import { Button } from "@heroui/react";
 
 export default function ProfilePage() {
   const { data } = authClient.useSession();
 
   const user = data?.user;
 
+  const [dbUser, setDbUser] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [favorites, setFavorites] = useState([]);
-
-  const [name, setName] = useState("");
-  const [photo, setPhoto] = useState("");
+  const { userInfo } = useContext(UserContext);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.email) return;
 
-    setName(user.name || "");
-    setPhoto(user.image || "");
-
-    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/${user.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.email}`)
       .then((res) => res.json())
-      .then((data) => setLessons(data));
+      .then(setDbUser);
 
-    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/favorites/${user.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons/${user.email}`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
-      .then((data) => setFavorites(data));
-  }, [user]);
+      .then((data) => setLessons(Array.isArray(data) ? data : []));
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons/favorites/${user.email}`)
+      .then((res) => res.json())
+      .then((data) => setFavorites(Array.isArray(data) ? data : []));
+  }, [user?.email]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    toast.success("Profile Updated Successfully");
+    const form = new FormData(e.target);
+
+    const updatedUser = {
+      name: form.get("name"),
+      image: form.get("photo"),
+    };
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/${user.email}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUser),
+      },
+    );
+
+    const data = await res.json();
+
+    if (res.ok) {
+      toast.success("Profile Updated Successfully");
+    } else {
+      toast.error(data.message || "Update Failed");
+    }
   };
 
   return (
@@ -45,7 +73,7 @@ export default function ProfilePage() {
       <div className="bg-white rounded-2xl shadow p-8">
         <div className="flex flex-col md:flex-row gap-8 items-center">
           <Image
-            src={photo || "/user.png"}
+            src={userInfo?.image || user?.image || "/user.png"}
             width={150}
             height={150}
             alt="profile"
@@ -57,7 +85,7 @@ export default function ProfilePage() {
 
             <p className="text-gray-500 mt-2">{user?.email}</p>
 
-            {user?.isPremium ? (
+            {userInfo?.role === "premium" ? (
               <span className="inline-block mt-4 px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold">
                 ⭐ Premium User
               </span>
@@ -106,25 +134,25 @@ export default function ProfilePage() {
         <form onSubmit={handleUpdate} className="space-y-5">
           <input
             type="text"
-            className="input input-bordered w-full"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            name="name"
+            defaultValue={userInfo?.name || user?.name || ""}
           />
 
           <input
             type="text"
-            className="input input-bordered w-full"
-            value={photo}
-            onChange={(e) => setPhoto(e.target.value)}
+            name="photo"
+            defaultValue={userInfo?.image || user?.image || ""}
           />
 
           <input
-            value={user?.email || ""}
+            value={userInfo?.email || user?.email || ""}
             readOnly
             className="input input-bordered w-full bg-gray-100"
           />
 
-          <button className="btn btn-primary w-full">Update Profile</button>
+          <Button color="primary" type="submit">
+            Update Profile
+          </Button>
         </form>
       </div>
 
