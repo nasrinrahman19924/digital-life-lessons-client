@@ -3,7 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-import { Card, Spinner, Divider } from "@heroui/react";
+import { Card, Spinner } from "@heroui/react";
+import { Divider } from "@heroui/divider";
 
 import {
   Users,
@@ -27,6 +28,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import React from "react";
 
 export default function AdminDashboard() {
   const { data, isLoading } = useQuery({
@@ -34,7 +36,7 @@ export default function AdminDashboard() {
 
     queryFn: async () => {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/admin/analytics`,
+       fetch `${process.env.NEXT_PUBLIC_API_URL}/admin/analytics`,
         {
           withCredentials: true,
         },
