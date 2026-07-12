@@ -16,15 +16,14 @@ export default function DashboardHome() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/lessons/${user.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons/my/${user.email}`)
       .then((res) => res.json())
       .then((data) => setLessons(data));
 
-    fetch(`https://digital-life-lessons-server-blush.vercel.app/api/favorites/${user.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons/favorites/${user.email}`)
       .then((res) => res.json())
       .then((data) => setFavorites(data));
   }, [user]);
-
   return (
     <div className="space-y-8">
       <div>

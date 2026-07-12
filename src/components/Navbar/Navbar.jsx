@@ -38,7 +38,10 @@ export default function MainNavbar() {
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.email}`)
       .then((res) => res.json())
-      .then((data) => setDbUser(data))
+      .then((data) => {
+        console.log("DB USER:", data);
+        setDbUser(data);
+      })
       .catch(console.error);
   }, [user]);
 
@@ -69,7 +72,7 @@ export default function MainNavbar() {
       },
     );
 
-    if (dbUser && dbUser.role !== "premium") {
+    if (dbUser && !dbUser.isPremium && dbUser.role !== "admin") {
       navLinks.push({
         label: "Upgrade",
         href: "/pricing",
@@ -140,9 +143,11 @@ export default function MainNavbar() {
                     <p className="font-semibold">{user?.name}</p>
 
                     <p className="text-xs text-zinc-500">
-                      {userInfo?.role === "premium"
-                        ? "⭐ Premium"
-                        : "Free User"}
+                      {dbUser?.role === "admin"
+                        ? "🛡️ Administrator"
+                        : dbUser?.isPremium
+                          ? "⭐ Premium User"
+                          : "Free User"}
                     </p>
                   </div>
 
@@ -241,9 +246,11 @@ export default function MainNavbar() {
                       <p className="text-xs text-zinc-500">{user?.email}</p>
 
                       <p className="text-xs text-zinc-500">
-                        {dbUser?.role === "premium"
-                          ? "⭐ Premium"
-                          : "Free User"}
+                        {dbUser?.role === "admin"
+                          ? "🛡️ Administrator"
+                          : dbUser?.isPremium
+                            ? "⭐ Premium User"
+                            : "Free User"}
                       </p>
                     </div>
                   </div>
