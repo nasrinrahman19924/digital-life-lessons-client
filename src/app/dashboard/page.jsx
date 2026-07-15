@@ -12,17 +12,31 @@ export default function DashboardHome() {
 
   const [lessons, setLessons] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons/my/${user.email}`)
-      .then((res) => res.json())
-      .then((data) => setLessons(data));
+    fetch(`${API}/lessons/my/${user.email}`, {
+      credentials: "include",
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to load lessons");
+        return res.json();
+      })
+      .then((data) => setLessons(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error(err);
+        setLessons([]);
+      });
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/lessons/favorites/${user.email}`)
+    fetch(`${API}/lessons/favorites/${user.email}`, {
+      credentials: "include",
+    })
       .then((res) => res.json())
-      .then((data) => setFavorites(data));
+      .then((data) => {
+        setFavorites(Array.isArray(data) ? data : []);
+      });
   }, [user]);
   return (
     <div className="space-y-8">

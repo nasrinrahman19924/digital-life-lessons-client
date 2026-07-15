@@ -39,7 +39,6 @@ export default function MainNavbar() {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.email}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("DB USER:", data);
         setDbUser(data);
       })
       .catch(console.error);
