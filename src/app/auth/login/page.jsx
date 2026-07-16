@@ -10,12 +10,7 @@ import {
   InputGroup,
   Input,
 } from "@heroui/react";
-import {
-  Eye,
-  EyeSlash,
-  At,
-  ShieldKeyhole,
-} from "@gravity-ui/icons";
+import { Eye, EyeSlash, At, ShieldKeyhole } from "@gravity-ui/icons";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
@@ -49,8 +44,10 @@ export default function LoginPage() {
         email,
         password,
         callbackURL: "/",
+        fetchOptions: {
+          credentials: "include",
+        },
       });
-
       if (error) {
         toast.error(error.message);
       } else {
@@ -72,8 +69,10 @@ export default function LoginPage() {
     const { error } = await signIn.social({
       provider: "google",
       callbackURL: "/",
+      fetchOptions: {
+        credentials: "include",
+      },
     });
-
     if (error) {
       toast.error(error.message);
     }
