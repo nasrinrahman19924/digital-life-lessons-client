@@ -56,7 +56,7 @@ export default function LoginPage() {
         setEmail("");
         setPassword("");
 
-        router.push("/");
+        window.location.href = "/";
       }
     } catch (err) {
       toast.error("Something went wrong.");

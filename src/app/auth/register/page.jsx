@@ -105,7 +105,7 @@ export default function RegisterPage() {
       setPassword("");
       setPhoto(null);
 
-      router.push("/");
+      window.location.href = "/";
     } catch (err) {
       console.log(err);
 
