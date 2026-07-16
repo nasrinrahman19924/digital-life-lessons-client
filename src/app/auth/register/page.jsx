@@ -62,7 +62,6 @@ export default function RegisterPage() {
         setUploading(true);
 
         const formData = new FormData();
-
         formData.append("image", photo);
 
         const uploadRes = await fetch(
@@ -77,21 +76,23 @@ export default function RegisterPage() {
         if (!uploadData.success) {
           setUploading(false);
           setIsLoading(false);
-
           return toast.error("Image upload failed.");
         }
 
         imageURL = uploadData.data.display_url;
-
         setUploading(false);
       }
 
-      const { error } = await signUp.email({
+      // ফিক্সড Better Auth সাইন আপ কল
+      const { error } = await authClient.signUp.email({
         name,
         email,
         password,
         image: imageURL,
         callbackURL: "/",
+        fetchOptions: {
+          credentials: "include", // কুকি সেভ করার জন্য এটি অত্যন্ত জরুরী!
+        },
       });
 
       if (error) {
@@ -105,10 +106,12 @@ export default function RegisterPage() {
       setPassword("");
       setPhoto(null);
 
-      window.location.href = "/";
+      // কুকি সেট হওয়ার জন্য সামান্য ১০ মিলি-সেকেন্ড সময় দিয়ে হোমপেজে রিফ্রেশ করে পাঠানো
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 100);
     } catch (err) {
       console.log(err);
-
       toast.error("Something went wrong.");
     } finally {
       setUploading(false);

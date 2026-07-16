@@ -134,7 +134,12 @@ export default function MainNavbar() {
                           : "Free User"}
                     </p>
                   </div>
-                  <Avatar src={user?.image} name={user?.name} size="md" />
+                  <Avatar
+                    src={user?.image || undefined}
+                    name={user?.name || "User"}
+                    size="md"
+                    showFallback
+                  />
                 </div>
               </DropdownTrigger>
 

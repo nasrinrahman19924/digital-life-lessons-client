@@ -40,7 +40,8 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const { error } = await signIn.email({
+      const { error } = await authClient.signIn.email({
+        // signIn.email এর বদলে authClient.signIn.email
         email,
         password,
         callbackURL: "/",
@@ -48,6 +49,7 @@ export default function LoginPage() {
           credentials: "include",
         },
       });
+
       if (error) {
         toast.error(error.message);
       } else {
@@ -56,7 +58,10 @@ export default function LoginPage() {
         setEmail("");
         setPassword("");
 
-        window.location.href = "/";
+        // সামান্য একটু সময় দিয়ে রিডাইরেক্ট
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 100);
       }
     } catch (err) {
       toast.error("Something went wrong.");
