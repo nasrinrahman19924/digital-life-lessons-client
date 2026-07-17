@@ -186,17 +186,12 @@ export default function RegisterPage() {
 
           {/* Photo URL Field */}
           <TextField className="flex flex-col gap-1.5">
-            <Label className="text-sm font-medium">Profile Image</Label>
+            <Label className="text-sm font-medium">Photo URL</Label>
 
             <InputGroup className="flex items-center gap-2 border border-zinc-200 rounded-xl px-3 bg-zinc-50">
               <Picture size={16} />
 
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setPhoto(e.target.files[0])}
-                className="w-full bg-transparent py-2 text-sm border-none"
-              />
+             <Input placeholder="Image url" />
             </InputGroup>
           </TextField>
 
