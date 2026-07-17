@@ -191,7 +191,9 @@ export default function RegisterPage() {
             <InputGroup className="flex items-center gap-2 border border-zinc-200 rounded-xl px-3 bg-zinc-50">
               <Picture size={16} />
 
-             <Input placeholder="Image url" />
+             <Input 
+             className="w-full bg-transparent py-2 text-sm outline-none border-none text-zinc-900 dark:text-zinc-100"
+               placeholder="Image url" />
             </InputGroup>
           </TextField>
 
