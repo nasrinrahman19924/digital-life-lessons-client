@@ -25,8 +25,11 @@ export default function MainNavbar() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // 🚨 Better Auth ক্লায়েন্ট থেকে সেশন স্টেট নেওয়ার সবচেয়ে নিরাপদ উপায়
   const { data: session, isPending } = authClient.useSession();
+
+  console.log("SESSION =", session);
+  console.log("PENDING =", isPending);
+
   const [dbUser, setDbUser] = useState(null);
   const { userInfo } = useContext(UserContext);
 

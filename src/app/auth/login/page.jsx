@@ -13,7 +13,7 @@ import {
 import { Eye, EyeSlash, At, ShieldKeyhole } from "@gravity-ui/icons";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { signIn } from "@/lib/auth-client";
+import { authClient, signIn } from "@/lib/auth-client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -29,60 +29,51 @@ export default function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!email) {
-      return toast.error("Email is required.");
-    }
-
-    if (!password) {
-      return toast.error("Password is required.");
-    }
+    if (!email) return toast.error("Email is required");
+    if (!password) return toast.error("Password is required");
 
     setIsLoading(true);
 
     try {
-      const { error } = await authClient.signIn.email({
-        // signIn.email এর বদলে authClient.signIn.email
+      const result = await authClient.signIn.email({
         email,
         password,
         callbackURL: "/",
-        fetchOptions: {
-          credentials: "include",
-        },
       });
 
-      if (error) {
-        toast.error(error.message);
-      } else {
-        toast.success("Login Successful 🎉");
+      console.log("LOGIN RESULT:", result);
 
-        setEmail("");
-        setPassword("");
-
-        // সামান্য একটু সময় দিয়ে রিডাইরেক্ট
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 100);
+      if (result.error) {
+        toast.error(result.error.message);
+        return;
       }
+
+      toast.success("Login Successful");
+
+      window.location.href = "/";
     } catch (err) {
-      toast.error("Something went wrong.");
+      console.error("LOGIN ERROR:", err);
+
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Something went wrong");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    const { error } = await signIn.social({
+    const result = await authClient.signIn.social({
       provider: "google",
       callbackURL: "/",
-      fetchOptions: {
-        credentials: "include",
-      },
     });
-    if (error) {
-      toast.error(error.message);
+
+    if (result.error) {
+      toast.error(result.error.message);
     }
   };
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4 py-8">
       <Card className="w-full max-w-md p-6 shadow-sm border border-zinc-200 dark:border-zinc-800">
